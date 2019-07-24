@@ -7,6 +7,11 @@
 "Latest Revision: 2018-05-24 
 "News:
 "Added Camera Functions(gmlCameraFunction)
+"
+"Update By: Ali Selim Agacan
+"Latest Revision: 2019-07-24 
+"News:
+"Added array functions
 
 if exists("b:current_syntax")
   finish
@@ -34,12 +39,11 @@ syn match gmlBuiltinFunction '\v<is_real\ze\_s*\('
 syn match gmlBuiltinFunction '\v<is_string\ze\_s*\('
 syn match gmlBuiltinFunction '\v<is_undefined\ze\_s*\('
 
-syn match gmlBuiltinFunction '\v<array_length(1|2)d\ze\_s*\('
-syn match gmlBuiltinFunction '\v<array_height2d\ze\_s*\('
-
 syn match gmlDSType '\v<ds_type_(map|list|stack|grid|queue|priority)>'
 syn match gmlDSFunction '\v<ds_(exists|set_precision)>'
 syn match gmlDSFunction '\v<ds_(grid|list|map|queue|stack|priority)_(create|destroy|clear)>'
+
+syn keyword gmlArrayFunction array_create array_length_1d array_length_2d array_height_2d is_array array_set array_get array_copy array_equals  
 
 syn keyword gmlDSGridFunction ds_grid_create ds_grid_destroy ds_grid_width ds_grid_height ds_grid_resize ds_grid_clear ds_grid_set ds_grid_set_disk ds_grid_set_grid_region ds_grid_set_region ds_grid_shuffle ds_grid_sort ds_grid_get ds_grid_get_max ds_grid_get_mean ds_grid_get_min ds_grid_get_sum ds_grid_get_disk_max ds_grid_get_disk_mean ds_grid_get_disk_min ds_grid_get_disk_sum ds_grid_add ds_grid_add_region ds_grid_add_disk ds_grid_add_grid_region ds_grid_multiply ds_grid_multiply_disk ds_grid_multiply_region ds_grid_multiply_grid_region ds_grid_value_exists ds_grid_value_disk_exists ds_grid_value_x ds_grid_value_y ds_grid_value_disk_x ds_grid_value_disk_y ds_grid_copy ds_grid_read ds_grid_write
 
@@ -409,6 +413,7 @@ hi def link gmlViewFunction               gmlFunction
 hi def link gmlCameraFunction             gmlFunction
 hi def link gmlBuiltinFunction            gmlFunction
 hi def link gmlBuiltinScriptVariable      gmlFunction
+hi def link gmlArrayFunction              gmlFunction
 
 hi def link gmlFunction                   Function
 
