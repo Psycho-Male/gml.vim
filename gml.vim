@@ -2,16 +2,6 @@
 " Language: Game Maker Language (.gml)
 " Maintainer: Ness Morris
 " Latest Revision: 2016-08-22
-"
-"Update By: Ali Selim Agacan
-"Latest Revision: 2018-05-24 
-"News:
-"Added Camera Functions(gmlCameraFunction)
-"
-"Update By: Ali Selim Agacan
-"Latest Revision: 2019-07-24 
-"News:
-"Added array functions
 
 if exists("b:current_syntax")
   finish
@@ -231,7 +221,9 @@ syn keyword gmlViewFunction view_enabled view_current view_visible view_object v
 
 syn keyword gmlCameraFunction camera_create camera_create_view camera_destroy camera_apply camera_set_view_mat camera_set_proj_mat camera_set_update_script camera_set_begin_script camera_set_end_script camera_set_view_pos camera_set_view_size camera_set_view_speed camera_set_view_border camera_set_view_angle camera_set_view_target camera_set_default view_camera view_current view_enabled view_visible view_xport view_yport view_wport view_hport view_surface_id view_get_camera view_get_visible view_get_xport view_get_yport view_get_wport view_get_hport view_get_surface_id view_set_camera view_set_visible view_set_xport view_set_yport view_set_wport view_set_hport view_set_surface_id 
 
-" TODO: add windows 8 functions
+syn keyword gmlLayerFunction layer_exists layer_get_id layer_get_depth layer_get_id_at_depth layer_get_name layer_get_all layer_get_all_elements layer_get_element_layer layer_get_element_type layer_get_x layer_get_y layer_get_hspeed layer_get_vspeed layer_create layer_destroy layer_x layer_y layer_hspeed layer_vspeed layer_add_instance layer_has_instance layer_instance_get_instance layer_destroy_instance layer_element_move layer_set_visible layer_get_visible layer_depth layer_force_draw_depth layer_is_draw_depth_forced layer_get_forced_depth layer_script_begin layer_script_end layer_shader layer_get_script_begin layer_get_script_end layer_get_shader layer_set_target_room layer_get_target_room layer_reset_target_room instance_deactivate_layer instance_activate_layer
+
+syn keyword gmlTilemapFunction layer_tilemap_get_id layer_tilemap_exists layer_tilemap_create layer_tilemap_destroy tilemap_tileset tilemap_x tilemap_y tilemap_set tilemap_set_at_pixel tilemap_set_mask tilemap_set_global_mask tilemap_set_width tilemap_set_height tilemap_get_mask tilemap_get_global_mask tilemap_get_tileset tilemap_get_frame tilemap_get_tile_width tilemap_get_tile_height tilemap_get_width tilemap_get_height tilemap_get_x tilemap_get_y tilemap_get tilemap_get_at_pixel tilemap_get_cell_x_at_pixel tilemap_get_cell_y_at_pixel draw_tilemap
 
 syn match gmlVariableName '\v\I\i{,63}' contained
 syn match gmlReal '\v<-?(\d+\.)?\d+>'
@@ -356,6 +348,8 @@ hi def link gmlIniFileFunction            gmlFunction
 hi def link gmlAssetFunction              gmlFunction
 hi def link gmlBackgroundFunction         gmlFunction
 hi def link gmlBackgroundTileFunction     gmlFunction
+hi def link gmlLayerFunction              gmlFunction
+hi def link gmlTilemapFunction            gmlFunction
 hi def link gmlFontFunction               gmlFunction
 hi def link gmlAudioFunction              gmlFunction
 hi def link gmlAudioEmitterFunction       gmlFunction
