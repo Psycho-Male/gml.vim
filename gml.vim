@@ -1,29 +1,34 @@
-" Vim syntax file
 " Language: Game Maker Language (.gml)
-" Maintainer: Ness Morris
-" Latest Revision: 2016-08-22
+" Originally Created By: Ness Morris
+" Maintained By: Ali Selim Agacan @Psycho-Male
 
-if exists("b:current_syntax")
+if exists("b:current_syntax") && b:current_syntax == "gml"
   finish
 endif
 
 " Control structures
 syn keyword gmlConditional if else switch
-syn keyword gmlStatement break return continue exit
+syn keyword gmlStatement break return continue exit 
 syn keyword gmlLabel case default
 syn keyword gmlRepeat while for repeat do while
 syn keyword gmlWith with
 syn keyword gmlDefine enum
 syn match gmlDefine     '\v#macro'
+syn match gmlDefine     '\<\v[a-z][a-z]+[A-Z]\w+'
 syn match gmlDefine     '\v#define.*'
-syn match paren        /[\[\](){}]/
-syn match parenCurly   /[{}]/
-syn keyword gmlTodo contained TODO FIXME NOTE XXX
-"added globalvar
-syn keyword gmlType var string globalvar
+syn match paren         /[\[\](){}]/
+syn match parenCurly    /[{}]/
+syn match gmlGlobal     /\v<\u(\w\u+_*)+/
+syn match gmlLocal      /\(\<_\w\+\>\)/
+syn match gmlLocal      /\<.\>/
+syn keyword gmlLocal    fixargn
+syn keyword gmlTodo contained TODO FIXME NOTE XXX SEE
+syn keyword gmlType var globalvar static method constructor new toString delete
 syn keyword gmlBoolean true false
-syn keyword gmlKeyword self other all noone undefined global
+syn keyword gmlEndMacro   exit break return continue 
+syn keyword gmlKeyword self other all noone undefined global fail success undef
 syn keyword gmlBuiltinGlobal score health lives async_load
+syn keyword gmlExceptionHandling try catch finally
 
 syn match gmlBuiltinFunction '\v<is_array\ze\_s*\('
 syn match gmlBuiltinFunction '\v<is_int(32|64)\ze\_s*\('
@@ -31,10 +36,13 @@ syn match gmlBuiltinFunction '\v<is_matrix\ze\_s*\('
 syn match gmlBuiltinFunction '\v<is_ptr\ze\_s*\('
 syn match gmlBuiltinFunction '\v<is_real\ze\_s*\('
 syn match gmlBuiltinFunction '\v<is_string\ze\_s*\('
+syn match gmlBuiltinFunction '\v<is_bool\ze\_s*\('
 syn match gmlBuiltinFunction '\v<is_undefined\ze\_s*\('
 
+syn match gmlBuiltinFunction '\<\w\+\ze('
+
 syn match gmlDSType '\v<ds_type_(map|list|stack|grid|queue|priority)>'
-syn match gmlDSFunction '\v<ds_(exists|set_precision)>'
+syn match gmlDSFunction '\v<ds_(exists|set_precision|exists_destroy)>'
 syn match gmlDSFunction '\v<ds_(grid|list|map|queue|stack|priority)_(create|destroy|clear)>'
 
 syn keyword gmlArrayFunction array_create array_length_1d array_length_2d array_height_2d is_array array_set array_get array_copy array_equals  
@@ -53,19 +61,19 @@ syn keyword gmlDSQueueFunction ds_queue_create ds_queue_destroy ds_queue_clear d
 
 syn keyword gmlDSStackFunction ds_stack_create ds_stack_destroy ds_stack_clear ds_stack_empty ds_stack_size ds_stack_copy ds_stack_top ds_stack_pop ds_stack_push ds_stack_read ds_stack_write
 
-syn keyword gmlBufferFunction buffer_create buffer_create_from_vertex_buffer buffer_create_from_vertex_buffer_ext buffer_delete buffer_read buffer_write buffer_fill buffer_seek buffer_tell buffer_peek buffer_poke buffer_save buffer_save_ext buffer_save_async buffer_load buffer_load_ext buffer_load_async buffer_async_group_begin buffer_async_group_option buffer_async_group_end buffer_copy buffer_copy_from_vertex_buffer buffer_get_address buffer_get_size buffer_get_surface buffer_set_surface buffer_resize buffer_sizeof buffer_md5 buffer_sha1 buffer_base64_encode buffer_base64_decode
+syn keyword gmlBufferFunction buffer_create buffer_create_from_vertex_buffer buffer_create_from_vertex_buffer_ext buffer_delete buffer_read buffer_write buffer_fill buffer_seek buffer_tell buffer_peek buffer_poke buffer_save buffer_save_ext buffer_save_async buffer_load buffer_load_ext buffer_load_async buffer_async_group_begin buffer_async_group_option buffer_async_group_end buffer_copy buffer_copy_from_vertex_buffer buffer_get_address buffer_get_size buffer_get_surface buffer_set_surface buffer_resize buffer_sizeof buffer_md5 buffer_sha1 buffer_base64_encode buffer_base64_decode buffer_u32 buffer_grow buffer_string
 
 syn keyword gmlCloudFunction cloud_synchronise cloud_string_save cloud_file_save
 
 syn keyword gmlTimeFunction date_set_timezone date_get_timezone current_time current_second current_minute current_hour current_day current_weekday current_month current_year date_create_datetime date_current_datetime date_compare_date date_compare_datetime date_compare_time date_valid_datetime date_date_of date_time_of date_is_today date_leap_year date_date_string date_datetime_string date_time_string date_second_span date_minute_span date_hour_span date_day_span date_week_span date_month_span date_year_span date_days_in_month date_days_in_year date_get_second date_get_minute date_get_hour date_get_day date_get_weekday date_get_week date_get_month date_get_year date_get_second_of_year date_get_minute_of_year date_get_hour_of_year date_get_day_of_year date_inc_second date_inc_minute date_inc_hour date_inc_day date_inc_week date_inc_month date_inc_year get_timer delta_time
 
-syn keyword gmlDebugFunction debug_mode get_integer get_string show_error show_message show_message_async show_question show_debug_message show_debug_overlay code_is_compiled fps fps_real debug_get_callstack timed_debug_message
+syn keyword gmlDebugFunction debug_mode get_integer get_string show_error show_message show_message_async show_question show_debug_message show_debug_overlay code_is_compiled fps fps_real debug_get_callstack
 
-syn keyword gmlDrawingFunction texture_get_width texture_get_height texture_get_texel_width texture_get_texel_height texture_set_interpolation texture_set_interpolation_ext texture_set_blending texture_set_repeat texture_set_repeat_ext texture_set_stage draw_texture_flush draw_enable_drawevent colour_get_blue color_get_blue colour_get_green color_get_green colour_get_red color_get_red colour_get_hue color_get_hue colour_get_saturation color_get_saturation colour_get_value color_get_value draw_getpixel draw_getpixel_ext draw_get_colour draw_get_color draw_get_alpha make_colour_hsv make_color_hsv make_colour_rgb make_color_rgb merge_colour merge_color draw_clear draw_clear_alpha draw_set_alpha draw_set_colour draw_set_color draw_set_colour_write_enable draw_set_color_write_enable draw_set_blend_mode draw_set_blend_mode_ext draw_set_alpha_test draw_set_alpha_test_ref_value draw_get_alpha_test draw_get_alpha_test_ref_value draw_enable_alphablend draw_arrow draw_circle draw_circle_colour draw_circle_color draw_ellipse draw_ellipse_colour draw_ellipse_color draw_line draw_line_colour draw_line_color draw_line_width draw_line_width_colour draw_line_width_color draw_point draw_point_colour draw_point_color draw_rectangle draw_rectangle_colour draw_rectangle_color draw_roundrect draw_roundrect_colour draw_roundrect_color draw_roundrect_ext draw_roundrect_colour_ext draw_roundrect_color_ext draw_triangle draw_triangle_colour draw_triangle_color draw_set_circle_precision draw_button draw_healthbar draw_path draw_primitive_begin draw_primitive_begin_texture draw_primitive_end draw_vertex draw_vertex_colour draw_vertex_color draw_vertex_texture draw_vertex_texture_colour draw_vertex_texture_color draw_self draw_sprite draw_sprite_ext draw_sprite_general draw_sprite_part draw_sprite_part_ext draw_sprite_stretched draw_sprite_stretched_ext draw_sprite_pos draw_sprite_tiled draw_sprite_tiled_ext  draw_enable_swf_aa draw_set_swf_aa_level draw_get_swf_aa_level draw_skeleton draw_skeleton_collision draw_skeleton_time draw_background draw_background_ext draw_background_part draw_background_part_ext draw_background_stretched draw_background_stretched_ext draw_background_tiled draw_background_tiled_ext draw_background_general draw_surface draw_surface_ext draw_surface_part draw_surface_part_ext draw_surface_stretched draw_surface_stretched_ext draw_surface_tiled draw_surface_tiled_ext draw_surface_general draw_set_font draw_set_halign draw_set_valign draw_text draw_text_ext draw_text_colour draw_text_color draw_text_transformed draw_text_ext_colour draw_text_ext_color draw_text_ext_transformed draw_text_transformed_colour draw_text_transformed_color draw_text_ext_transformed_colour draw_text_ext_transformed_color draw_highscore
+syn keyword gmlDrawingFunction texture_get_width texture_get_height texture_get_texel_width texture_get_texel_height texture_set_interpolation texture_set_interpolation_ext texture_set_blending texture_set_repeat texture_set_repeat_ext texture_set_stage draw_texture_flush draw_enable_drawevent colour_get_blue color_get_blue colour_get_green color_get_green colour_get_red color_get_red colour_get_hue color_get_hue colour_get_saturation color_get_saturation colour_get_value color_get_value draw_getpixel draw_getpixel_ext draw_get_colour draw_get_color draw_get_alpha make_colour_hsv make_color_hsv make_colour_rgb make_color_rgb merge_colour merge_color draw_clear draw_clear_alpha draw_set_alpha draw_set_colour draw_set_color draw_set_colour_write_enable draw_set_color_write_enable draw_set_blend_mode draw_set_blend_mode_ext draw_set_alpha_test draw_set_alpha_test_ref_value draw_get_alpha_test draw_get_alpha_test_ref_value draw_enable_alphablend draw_arrow draw_circle draw_circle_colour draw_circle_color draw_ellipse draw_ellipse_colour draw_ellipse_color draw_line draw_line_colour draw_line_color draw_line_width draw_line_width_colour draw_line_width_color draw_point draw_point_colour draw_point_color draw_rectangle draw_rectangle_colour draw_rectangle_color draw_roundrect draw_roundrect_colour draw_roundrect_color draw_roundrect_ext draw_roundrect_colour_ext draw_roundrect_color_ext draw_triangle draw_triangle_colour draw_triangle_color draw_set_circle_precision draw_button draw_healthbar draw_path draw_primitive_begin draw_primitive_begin_texture draw_primitive_end draw_vertex draw_vertex_colour draw_vertex_color draw_vertex_texture draw_vertex_texture_colour draw_vertex_texture_color draw_self draw_sprite draw_sprite_ext draw_sprite_general draw_sprite_part draw_sprite_part_ext draw_sprite_stretched draw_sprite_stretched_ext draw_sprite_pos draw_sprite_tiled draw_sprite_tiled_ext  draw_enable_swf_aa draw_set_swf_aa_level draw_get_swf_aa_level draw_skeleton draw_skeleton_collision draw_skeleton_time draw_background draw_background_ext draw_background_part draw_background_part_ext draw_background_stretched draw_background_stretched_ext draw_background_tiled draw_background_tiled_ext draw_background_general draw_surface draw_surface_ext draw_surface_part draw_surface_part_ext draw_surface_stretched draw_surface_stretched_ext draw_surface_tiled draw_surface_tiled_ext draw_surface_general draw_set_font draw_set_halign draw_set_valign draw_text draw_text_ext draw_text_colour draw_text_color draw_text_transformed draw_text_ext_colour draw_text_ext_color draw_text_ext_transformed draw_text_transformed_colour draw_text_transformed_color draw_text_ext_transformed_colour draw_text_ext_transformed_color draw_highscore draw_set_align draw_set_align_color sprite_get_speed sprite_get_speed_type sprite_get_width sprite_get_height sprite_get_xoffset sprite_get_yoffset sprite_get_bbox_bottom sprite_get_bbox_left sprite_get_bbox_right sprite_get_bbox_top sprite_get_bbox_mode sprite_get_tpe sprite_get_texture sprite_get_uvs
 
 syn keyword gml3DDrawingFunction d3d_primitive_begin d3d_vertex d3d_vertex_colour d3d_vertex_color d3d_primitive_end d3d_primitive_begin_texture d3d_vertex_texture d3d_vertex_texture_colour d3d_vertex_texture_color d3d_draw_block d3d_draw_cylinder d3d_draw_cone d3d_draw_ellipsoid d3d_draw_wall d3d_draw_floor d3d_set_fog d3d_set_lighting d3d_set_shading d3d_light_define_direction d3d_light_define_point d3d_light_enable d3d_light_define_ambient d3d_vertex_normal d3d_vertex_normal_colour d3d_vertex_normal_color d3d_vertex_normal_texture d3d_vertex_normal_texture_colour d3d_vertex_normal_texture_color d3d_model_create d3d_model_destroy d3d_model_clear d3d_model_save d3d_model_load d3d_model_draw d3d_model_primitive_begin d3d_model_vertex d3d_model_vertex_colour d3d_model_vertex_color d3d_model_vertex_texture d3d_model_vertex_texture_colour d3d_model_vertex_texture_color d3d_model_vertex_normal d3d_model_vertex_normal_colour d3d_model_vertex_normal_color d3d_model_vertex_normal_texture d3d_model_vertex_normal_texture_colour d3d_model_vertex_normal_texture_color d3d_model_primitive_end d3d_model_block d3d_model_cylinder d3d_model_cone d3d_model_ellipsoid d3d_model_wall d3d_model_floor d3d_set_projection d3d_set_projection_ext d3d_set_projection_ortho d3d_set_projection_perspective d3d_start d3d_end d3d_set_hidden d3d_set_perspective d3d_set_depth d3d_set_culling d3d_set_zwriteenable d3d_transform_set_identity d3d_transform_set_translation d3d_transform_set_scaling d3d_transform_set_rotation_x d3d_transform_set_rotation_y d3d_transform_set_rotation_z d3d_transform_set_rotation_axis d3d_transform_add_translation d3d_transform_add_scaling d3d_transform_add_rotation_x d3d_transform_add_rotation_y d3d_transform_add_rotation_z d3d_transform_add_rotation_axis d3d_transform_stack_clear d3d_transform_stack_empty d3d_transform_stack_push d3d_transform_stack_pop d3d_transform_stack_top d3d_transform_stack_discard d3d_transform_vertex
 
-syn keyword gmlFileFunction directory_exists directory_create directory_destroy temp_directory working_directory program_directory base64_encode base64_decode json_encode json_decode md5_string_utf8 md5_string_unicode md5_file sha1_string_utf8 sha1_string_unicode sha1_file zip_unzip
+syn keyword gmlFileFunction directory_exists directory_create directory_destroy temp_directory working_directory program_directory base64_encode base64_decode json_encode json_decode md5_string_utf8 md5_string_unicode md5_file sha1_string_utf8 sha1_string_unicode sha1_file zip_unzip json_parse json_stringify
 
 syn keyword gmlBinaryFileFunction file_bin_open file_bin_rewrite file_bin_close file_bin_size file_bin_position file_bin_seek file_bin_write_byte file_bin_read_byte
 
@@ -73,9 +81,9 @@ syn keyword gmlFileSystemFunction file_exists file_delete file_rename file_copy 
 
 syn keyword gmlTextFileFunction get_open_filename get_open_filename_ext get_save_filename get_save_filename_ext
 
-syn keyword gmlIniFileFunction ini_open ini_close ini_write_real ini_write_string ini_read_real ini_read_string ini_key_exists ini_section_exists ini_key_delete ini_section_delete ini_open_from_string
+syn keyword gmlIniFileFunction ini_open ini_close ini_write_real ini_write_string ini_read_real ini_read_string ini_key_exists ini_section_exists ini_key_delete ini_section_delete ini_open_from_string file_text_open_read file_text_open_write file_text_open_append file_text_open_from_string file_text_read_real file_text_read_string file_text_readln file_text_write_real file_text_write_string file_text_writeln file_text_eoln file_text_eof file_text_close
 
-syn keyword gmlAssetFunction asset_get_index asset_get_type typeof
+syn keyword gmlAssetFunction asset_get_index asset_get_type typeof asset_unknown asset_object asset_script asset_sprite asset_room asset_sound asset_tiles asset_path asset_font asset_timeline asset_shader tag_get_assets tag_get_assset_id asset_get_tags asset_add_tags asset_remove_tags asset_has_tags asset_has_any_tag asset_clear_tags
 
 syn match gmlBackgroundFunction '\v<background_(index|visible|alpha|blend|x|y|foreground|hspeed|vspeed|htiled|vtiled|width|height|xscale|yscale|colour color|showcolour showcolor)'
 syn match gmlBackgroundFunction '\v<background_get_(name|width|height|texture|uvs)'
@@ -115,7 +123,7 @@ syn keyword gmlMathFunction exp ln power sqr sqrt log2 log10 logn int64
 
 syn keyword gmlVectorFunction point_direction point_distance point_distance_3d dot_product dot_product_3d dot_product_normalised dot_product_normalised_3d angle_difference
 
-syn keyword gmlMiscFunction game_id game_save_id game_display_name game_project_name game_end game_restart game_load game_load_buffer game_save game_save_buffer script_exists script_get_name script_execute gml_release_mode gml_pragma parameter_count parameter_string environment_get_variable external_define external_call external_free cursor_sprite alarm_set alarm_get GM_build_date GM_version game_get_speed game_set_speed
+syn keyword gmlMiscFunction game_id game_save_id game_display_name game_project_name game_end game_restart game_load game_load_buffer game_save game_save_buffer script_exists script_get_name script_execute gml_release_mode gml_pragma parameter_count parameter_string environment_get_variable external_define external_call external_free cursor_sprite alarm_set alarm_get GM_build_date GM_version game_get_speed game_set_speed script_exists_execute
 
 syn keyword gmlMatrixFunction matrix_get matrix_set matrix_build matrix_multiply is_matrix
 
@@ -129,19 +137,13 @@ syn keyword gmlImmersionHapticFunction immersion_play_effect immersion_stop
 
 syn keyword gmlJoystickFunction joystick_exists joystick_name joystick_axes joystick_buttons joystick_has_pov joystick_direction joystick_check_button joystick_xpos joystick_ypos joystick_zpos joystick_rpos joystick_upos joystick_vpos joystick_pov
 
-syn keyword gmlKeyboardConstant vk_nokey vk_anykey vk_left vk_right vk_up vk_down vk_enter vk_escape vk_space vk_shift vk_control vk_alt vk_backspace vk_tab vk_home vk_end vk_delete vk_insert vk_pageup vk_pagedown vk_pause vk_printscreen vk_multiply vk_divide vk_add vk_subtract vk_decimal
-
-syn match gmlKeyboardConstant 'vk_f[0-9]'
-syn match gmlKeyboardConstant 'vk_f1[0-2]'
-syn match gmlKeyboardConstant 'vk_numpad[0-9]'
+syn keyword gmlKeyboardConstant vk_nokey vk_anykey vk_left vk_right vk_up vk_down vk_enter vk_escape vk_space vk_shift vk_control vk_alt vk_backspace vk_tab vk_home vk_end vk_delete vk_insert vk_pageup vk_pagedown vk_pause vk_printscreen vk_multiply vk_divide vk_add vk_subtract vk_decimal keyboard_key
 
 syn keyword gmlKeyboardModifierConstant vk_lshift vk_lcontrol vk_lalt vk_rshift vk_rcontrol vk_ralt
 
-syn keyword gmlKeyboardFunction io_clear keyboard_check keyboard_check_pressed keyboard_check_released keyboard_check_direct keyboard_clear keyboard_key_press keyboard_key_release keyboard_key keyboard_lastkey keyboard_lastchar keyboard_string keyboard_set_map keyboard_get_map keyboard_unset_map keyboard_get_numlock keyboard_set_numlock
+syn keyword gmlKeyboardFunction io_clear keyboard_check keyboard_check_pressed keyboard_check_released keyboard_check_direct keyboard_clear keyboard_key_press keyboard_key_release keyboard_lastkey keyboard_lastchar keyboard_string keyboard_set_map keyboard_get_map keyboard_unset_map keyboard_get_numlock keyboard_set_numlock
 
 syn keyword gmlMouseFunction mouse_button mouse_check_button mouse_check_button_pressed mouse_check_button_released mouse_clear mouse_last_button mouse_wheel_up mouse_wheel_down mouse_x mouse_y
-
-syn keyword gmlMouseConstant mb_left mb_middle mb_right mb_none mb_any
 
 syn keyword gmlCollisionFunction place_empty place_free place_meeting position_empty position_meeting position_change position_destroy collision_circle collision_circle_list collision_ellipse collision_ellipse_list collision_line collision_line_list collision_point collision_point_list collision_rectangle collision_rectangle_list point_in_rectangle point_in_triangle point_in_circle rectangle_in_rectangle rectangle_in_triangle rectangle_in_circle
 
@@ -155,13 +157,13 @@ syn keyword gmlNetworkFunction network_create_server network_create_server_raw n
 
 syn keyword gmlBuiltinInstanceVariable instance_id instance_count
 
-syn keyword gmlBuiltinInstanceProperty id solid visible persistent depth alarm object_index sprite_index sprite_width sprite_height sprite_xoffset sprite_yoffset image_alpha image_angle image_blend image_index image_number image_speed image_xscale image_yscale mask_index bbox_bottom bbox_left bbox_right bbox_top application_surface
+syn keyword gmlBuiltinInstanceProperty id solid visible persistent layer depth alarm object_index sprite_index sprite_width sprite_height sprite_xoffset sprite_yoffset image_alpha image_angle image_blend image_index image_number image_speed image_xscale image_yscale mask_index bbox_bottom bbox_left bbox_right bbox_top application_surface
 
 syn keyword gmlPathFunction path_start path_end path_add path_add_point path_change_point path_insert_point path_delete_point path_clear_points path_append path_assign path_delete path_duplicate path_flip path_mirror path_reverse path_rotate path_scale path_set_closed path_set_kind path_set_precision path_shift path_exists path_get_closed path_get_kind path_get_length path_get_name path_get_number path_get_point_speed path_get_point_x path_get_point_y path_get_precision path_get_speed path_get_x path_get_y
 
 syn keyword gmlPathVariable path_index path_position path_positionprevious path_speed path_scale path_orientation path_endaction
 
-syn keyword gmlBuiltinInstanceFunction instance_change instance_copy instance_create_layer instance_create_depth instance_destroy instance_exists instance_find instance_furthest instance_nearest instance_number instance_place instance_position instance_id_get
+syn keyword gmlBuiltinInstanceFunction instance_change instance_copy instance_create_layer instance_create_depth instance_destroy instance_exists instance_find instance_furthest instance_nearest instance_number instance_place instance_position instance_id_get instance_exists_create instance_exists_destroy
 
 syn keyword gmlGlobalInstanceFunction instance_activate_all instance_activate_object instance_activate_region instance_deactivate_all instance_deactivate_object instance_deactivate_region
 
@@ -201,13 +203,13 @@ syn keyword gmlPushNotificationFunction push_local_notification push_get_first_l
 
 syn keyword gmlRoomFunction room_exists room_first room_last room_next room_previous room room_speed room_height room_width room_persistent room_caption room_get_name room_goto room_goto_next room_goto_previous room_restart room_add room_duplicate room_assign room_instance_add room_instance_clear room_tile_add room_tile_add_ext room_tile_clear room_set_background room_set_background_colour room_set_background_color room_set_height room_set_width room_set_persistent room_set_viewport room_set_view_enabled
 
-syn keyword gmlShaderFunction shader_set shader_get_uniform shader_get_sampler_index shader_set_uniform_f shader_set_uniform_f_array shader_set_uniform_i shader_set_uniform_i_array shader_set_uniform_matrix shader_set_uniform_matrix_array shader_reset shader_is_compiled shaders_are_supported shader_enable_corner_id
+syn keyword gmlShaderFunction shader_set shader_get_uniform shader_get_sampler_index shader_set_uniform_f shader_set_uniform_f_array shader_set_uniform_i shader_set_uniform_i_array shader_set_uniform_matrix shader_set_uniform_matrix_array shader_reset shader_is_compiled shaders_are_supported shader_enable_corner_id shader_current
 
 syn keyword gmlShaderConstant MATRIX_VIEW MATRIX_PROJECTION MATRIX_WORLD MATRIX_WORLD_VIEW MATRIX_WORLD_VIEW_PROJECTION MATRIX_MAX MAX_VS_LIGHTS gm_Matrices gm_BaseTexture gm_LightingEnabled gm_FogStart gm_RcpFogRange gm_PS_FogEnabled gm_FogColour gm_VS_FogEnabled gm_AlphaTestEnabled gm_AlphaRefValue
 
 " TODO: add steam integration functions
 
-syn keyword gmlStringFunction ansi_char chr ord real is_string string string_byte_at string_byte_length string_set_byte_at string_char_at string_ord_at string_copy string_count string_delete string_digits string_format string_insert string_length string_letters string_lettersdigits string_lower string_pos string_repeat string_replace string_replace_all string_upper string_height string_height_ext string_width string_width_ext clipboard_has_text clipboard_get_text clipboard_set_text
+syn keyword gmlStringFunction ansi_char chr ord real is_string string string_byte_at string_byte_length string_set_byte_at string_char_at string_ord_at string_copy string_count string_delete string_digits string_format string_insert string_length string_letters string_lettersdigits string_lower string_pos string_repeat string_replace string_replace_all string_upper string_height string_height_ext string_width string_width_ext clipboard_has_text clipboard_get_text clipboard_set_text str int
 
 syn keyword gmlSurfaceFunction surface_exists surface_create surface_create_ext surface_resize surface_set_target surface_set_target_ext surface_reset_target surface_copy surface_copy_part surface_get_height surface_get_width surface_get_texture surface_getpixel surface_getpixel_ext surface_free surface_save surface_save_part
 
@@ -229,7 +231,7 @@ syn keyword gmlLayerFunction layer_exists layer_get_id layer_get_depth layer_get
 
 syn keyword gmlTilemapFunction layer_tilemap_get_id layer_tilemap_exists layer_tilemap_create layer_tilemap_destroy tilemap_tileset tilemap_x tilemap_y tilemap_set tilemap_set_at_pixel tilemap_set_mask tilemap_set_global_mask tilemap_set_width tilemap_set_height tilemap_get_mask tilemap_get_global_mask tilemap_get_tileset tilemap_get_frame tilemap_get_tile_width tilemap_get_tile_height tilemap_get_width tilemap_get_height tilemap_get_x tilemap_get_y tilemap_get tilemap_get_at_pixel tilemap_get_cell_x_at_pixel tilemap_get_cell_y_at_pixel draw_tilemap
 
-syn keyword gmlVariableFunction variable_instance_exists variable_instance_get variable_instance_set variable_instance_get_names variable_global_exists variable_global_get variable_global_set 
+syn keyword gmlVariableFunction variable_instance_exists variable_instance_get variable_instance_set variable_instance_get_names variable_global_exists variable_global_get variable_global_set variable_struct_get variable_struct_set variable_struct_remove variable_struct_get_names variable_struct_names_count instance_of
 
 syn keyword gmlGpuFunction gpu_get_blendenable gpu_get_ztestenable gpu_get_zfunc gpu_get_zwriteenable gpu_get_fog gpu_get_cullmode gpu_get_blendmode gpu_get_blendmode_ext gpu_get_blendmode_ext_sepalpha gpu_get_blendmode_src gpu_get_blendmode_dest gpu_get_blendmode_srcalpha gpu_get_blendmode_destalpha gpu_get_colorwriteenable gpu_get_alphatestenable gpu_get_alphatestref gpu_get_texfilter gpu_get_texfilter_ext gpu_get_texrepeat gpu_get_texrepeat_ext gpu_set_blendenable gpu_set_ztestenable gpu_set_zfunc gpu_set_zwriteenable gpu_set_fog gpu_set_cullmode gpu_set_blendmode gpu_set_blendmode_ext gpu_set_blendmode_ext_sepalpha gpu_set_colorwriteenable gpu_set_alphatestenable gpu_set_alphatestref gpu_set_texfilter gpu_set_texfilter_ext gpu_set_texrepeat gpu_set_texrepeat_ext gpu_push_state gpu_pop_state gpu_get_state gpu_set_state 
 syn match gmlVariableName '\v\I\i{,63}' contained
@@ -237,6 +239,7 @@ syn match gmlReal '\v<-?(\d+\.)?\d+>'
 
 " Strings and chars
 syn region gmlString start=/\v\z("|')/ skip=/\v\\./ end=/\v\z1/
+syn region gmlString start=/\v\z("|')/ skip=/\v\\./ end=/\v\z1/ contained
 syn match  gmlChar /'.'/
 
     " Unary operators
@@ -287,6 +290,9 @@ syn match gmlAccessorOperator '\v\[\zs\s*\?'|  " ds_map[? ]
 syn match gmlAccessorOperator '\v\[\zs\s*\#'|  " ds_grid[# ]
 syn match gmlAccessorOperator '\v\[\zs\s*\@'|  " array[@ ]
 
+syn match gmlTernaryOperator '\v\zs\s*\?'|
+syn match gmlTernaryOperator '\v\zs\s*\:'
+
 " Comments
 syn region gmlLineComment start='\v((\/)@<!\/{2}(\/)@!|\/{4,})' end='\v$' keepend contains=gmlTodo
 syn region gmlDocComment start='\v(\/)@<!\/{3}(\/)@!' end='\v$' keepend contains=gmlTodo
@@ -296,14 +302,20 @@ syn region gmlBlockComment start='\v\/\*' end='\v\*\/' contains=gmlTodo fold ext
 
 syn region gmlParenPair start='(' end=')' transparent extend
 syn region gmlCodeBlock start='\v\{' end='\v\}' transparent extend fold
+syn region gmlBracket   start='\v\[' end='\v\]' transparent extend
+"syn region gmlBracket   start='\v\[' end='\v\]' extend fold contains=gmlString
 " syn region gmlFunctionDefine start='\v#define \I\i*\_.{-}\{' end='\v\}' transparent keepend fold
 "
 " arguments
-syn keyword gmlBuiltinScriptVariable argument_count
+syn keyword gmlBuiltinScriptVariable argument_count function
 syn match gmlBuiltinScriptVariable '\v<argument\ze\[([0-9]|1[0-5]|(\S+\s*)+)\]'
 syn match gmlBuiltinScriptVariable '\v<argument(1[0-5]|[0-9])>'
 
-syn keyword gmlEventTypeConstant ev_create ev_destroy ev_step ev_alarm ev_keyboard ev_keypress ev_keyrelease ev_mouse ev_gesture ev_collision ev_other ev_outside ev_boundary ev_game_start ev_game_end ev_room_start ev_room_end ev_no_more_lives ev_no_more_health ev_animation_end ev_end_if_pat ev_close_button hev_draw ev_draw_being ev_draw_end ev_draw_pre ev_draw_post ev_gui ev_gui_begin ev_gui_end
+"Brackets
+"syn region gmlSyntaxBracket start='\[' end=']'
+"syn region gmlSyntaxBracket start='(' end=')'
+
+syn keyword gmlEventTypeConstant ev_create ev_destroy ev_step ev_alarm ev_keyboard ev_keypress ev_keyrelease ev_mouse ev_gesture ev_collision ev_other ev_outside ev_boundary ev_game_start ev_game_end ev_room_start ev_room_end ev_no_more_lives ev_no_more_health ev_animation_end ev_end_if_pat ev_close_button ev_draw ev_draw_being ev_draw_end ev_draw_pre ev_draw_post ev_gui ev_gui_begin ev_gui_end
 syn match gmlEventNumberConstant '\v<ev_step_(normal|begin|end)>'
 syn match gmlEventNumberConstant '\v<ev_draw_(begin|end|pre|post)>'
 syn match gmlEventNumberConstant '\v<ev_gui_(begin|end)>'
@@ -330,151 +342,162 @@ syn sync fromstart
 
 " Link syntax groups to common highlighting groups
 
-hi def link gmlConditional                Conditional
-hi def link gmlStatement                  Statement
-hi def link gmlRepeat                     Repeat
-hi def link gmlWith                       Statement
-hi def link gmlLabel                      Label
-hi def link gmlDefine                     Macro
-hi def link paren                         gmlFunction
-hi def link parenCurly                    Conditional
-hi def link gmlBlendmodeConstant          Macro
+hi def link gmlConditional                  Conditional
+hi def link gmlStatement                    Statement
+hi def link gmlRepeat                       Repeat
+hi def link gmlWith                         Statement
+hi def link gmlLabel                        Label
+hi def link gmlDefine                       Macro
+hi def link paren                           gmlFunction
+hi def link parenCurly                      Conditional
+hi def link gmlBlendmodeConstant            Macro
 
-hi def link gmlBuiltinGlobal              gmlFunction
-hi def link gmlDSFunction                 gmlFunction
-hi def link gmlDSGridFunction             gmlFunction
-hi def link gmlDSMapFunction              gmlFunction
-hi def link gmlDSListFunction             gmlFunction
-hi def link gmlDSQueueFunction            gmlFunction
-hi def link gmlDSPriorityFunction         gmlFunction
-hi def link gmlDSStackFunction            gmlFunction
-hi def link gmlDSJSONFunction             gmlFunction
-hi def link gmlCloudFunction              gmlFunction
-hi def link gmlTimeFunction               gmlFunction
-hi def link gmlDebugFunction              gmlFunction
-hi def link gmlDrawingFunction            gmlFunction
-hi def link gml3DDrawingFunction          gmlFunction
-hi def link gmlFileFunction               gmlFunction
-hi def link gmlBinaryFileFunction         gmlFunction
-hi def link gmlFileSystemFunction         gmlFunction
-hi def link gmlTextFileFunction           gmlFunction
-hi def link gmlIniFileFunction            gmlFunction
-hi def link gmlAssetFunction              gmlFunction
-hi def link gmlBackgroundFunction         gmlFunction
-hi def link gmlBackgroundTileFunction     gmlFunction
-hi def link gmlLayerFunction              gmlFunction
-hi def link gmlTilemapFunction            gmlFunction
-hi def link gmlVariableFunction            gmlFunction
-hi def link gmlFontFunction               gmlFunction
-hi def link gmlAudioFunction              gmlFunction
-hi def link gmlAudioEmitterFunction       gmlFunction
-hi def link gmlAudioListenerFunction      gmlFunction
-hi def link gmlAudioGroupFunction         gmlFunction
-hi def link gmlAudioBufferFunction        gmlFunction
-hi def link gmlAudioSyncFunction          gmlFunction
-hi def link gmlSpriteFunction             gmlFunction
-hi def link gmlSkeletalAnimationFunction  gmlFunction
-hi def link gmlHTML5Function              gmlFunction
-hi def link gmlIAPFunction                gmlFunction
-hi def link gmlRandomFunction             gmlFunction
-hi def link gmlTrigFunction               gmlFunction
-hi def link gmlRoundFunction              gmlFunction
-hi def link gmlMathFunction               gmlFunction
-hi def link gmlVectorFunction             gmlFunction
-hi def link gmlMiscFunction               gmlFunction
-hi def link gmlMatrixFunction             gmlFunction
-hi def link gmlVirtualKeyFunction         gmlFunction
-hi def link gmlDeviceInputFunction        gmlFunction
-hi def link gmlGamepadFunction            gmlFunction
-hi def link gmlImmersionHapticFunction    gmlFunction
-hi def link gmlJoystickFunction           gmlFunction
-hi def link gmlKeyboardFunction           gmlFunction
-hi def link gmlMouseFunction              gmlFunction
-hi def link gmlCollisionFunction          gmlFunction
-hi def link gmlMotionPlanningFunction     gmlFunction
-hi def link gmlMovementFunction           gmlFunction
-hi def link gmlNetworkFunction            gmlFunction
-hi def link gmlPathFunction               gmlFunction
-hi def link gmlBuiltinInstanceFunction    gmlFunction
-hi def link gmlGlobalInstanceFunction     gmlFunction
-hi def link gmlGlobalObjectFunction       gmlFunction
-hi def link gmlEventFunction              gmlFunction
-hi def link gmlOSFunction                 gmlFunction
-hi def link gmlSimpleParticleFunction     gmlFunction
-hi def link gmlParticleEffectFunction     gmlFunction
-hi def link gmlParticleEmitterFunction    gmlFunction
-hi def link gmlPhysicsFunction            gmlFunction
-hi def link gmlPhysicsFixtureFunction     gmlFunction
-hi def link gmlPhysicsForceFunction       gmlFunction
-hi def link gmlPhysicsJointFunction       gmlFunction
-hi def link gmlPhysicsParticleFunction    gmlFunction
-hi def link gmlPhysicsWorldFunction       gmlFunction
-hi def link gmlPushNotificationFunction   gmlFunction
-hi def link gmlRoomFunction               gmlFunction
-hi def link gmlShaderFunction             gmlFunction
-hi def link gmlStringFunction             gmlFunction
-hi def link gmlSurfaceFunction            gmlFunction
-hi def link gmlApplicationSurfaceFunction gmlFunction
-hi def link gmlTimelineFunction           gmlFunction
-hi def link gmlDisplayFunction            gmlFunction
-hi def link gmlWindowFunction             gmlFunction
-hi def link gmlViewFunction               gmlFunction
-hi def link gmlCameraFunction             gmlFunction
-hi def link gmlBuiltinFunction            gmlFunction
-hi def link gmlBuiltinScriptVariable      gmlFunction
-hi def link gmlArrayFunction              gmlFunction
-hi def link gmlGpuFunction                gmlFunction
+hi def link gmlBuiltinGlobal                gmlFunction
+hi def link gmlDSFunction                   gmlFunction
+hi def link gmlDSGridFunction               gmlFunction
+hi def link gmlDSMapFunction                gmlFunction
+hi def link gmlDSListFunction               gmlFunction
+hi def link gmlDSQueueFunction              gmlFunction
+hi def link gmlDSPriorityFunction           gmlFunction
+hi def link gmlDSStackFunction              gmlFunction
+hi def link gmlDSJSONFunction               gmlFunction
+hi def link gmlCloudFunction                gmlFunction
+hi def link gmlTimeFunction                 gmlFunction
+hi def link gmlDebugFunction                gmlFunction
+hi def link gmlDrawingFunction              gmlFunction
+hi def link gml3DDrawingFunction            gmlFunction
+hi def link gmlFileFunction                 gmlFunction
+hi def link gmlBinaryFileFunction           gmlFunction
+hi def link gmlFileSystemFunction           gmlFunction
+hi def link gmlTextFileFunction             gmlFunction
+hi def link gmlIniFileFunction              gmlFunction
+hi def link gmlAssetFunction                gmlFunction
+hi def link gmlBackgroundFunction           gmlFunction
+hi def link gmlBackgroundTileFunction       gmlFunction
+hi def link gmlLayerFunction                gmlFunction
+hi def link gmlTilemapFunction              gmlFunction
+hi def link gmlVariableFunction             gmlFunction
+hi def link gmlFontFunction                 gmlFunction
+hi def link gmlAudioFunction                gmlFunction
+hi def link gmlAudioEmitterFunction         gmlFunction
+hi def link gmlAudioListenerFunction        gmlFunction
+hi def link gmlAudioGroupFunction           gmlFunction
+hi def link gmlAudioBufferFunction          gmlFunction
+hi def link gmlAudioSyncFunction            gmlFunction
+hi def link gmlSpriteFunction               gmlFunction
+hi def link gmlSkeletalAnimationFunction    gmlFunction
+hi def link gmlHTML5Function                gmlFunction
+hi def link gmlIAPFunction                  gmlFunction
+hi def link gmlRandomFunction               gmlFunction
+hi def link gmlTrigFunction                 gmlFunction
+hi def link gmlRoundFunction                gmlFunction
+hi def link gmlMathFunction                 gmlFunction
+hi def link gmlVectorFunction               gmlFunction
+hi def link gmlMiscFunction                 gmlFunction
+hi def link gmlMatrixFunction               gmlFunction
+hi def link gmlVirtualKeyFunction           gmlFunction
+hi def link gmlDeviceInputFunction          gmlFunction
+hi def link gmlGamepadFunction              gmlFunction
+hi def link gmlImmersionHapticFunction      gmlFunction
+hi def link gmlJoystickFunction             gmlFunction
+hi def link gmlKeyboardFunction             gmlFunction
+hi def link gmlMouseFunction                gmlFunction
+hi def link gmlCollisionFunction            gmlFunction
+hi def link gmlMotionPlanningFunction       gmlFunction
+hi def link gmlMovementFunction             gmlFunction
+hi def link gmlNetworkFunction              gmlFunction
+hi def link gmlPathFunction                 gmlFunction
+hi def link gmlBuiltinInstanceFunction      gmlFunction
+hi def link gmlGlobalInstanceFunction       gmlFunction
+hi def link gmlGlobalObjectFunction         gmlFunction
+hi def link gmlEventFunction                gmlFunction
+hi def link gmlOSFunction                   gmlFunction
+hi def link gmlSimpleParticleFunction       gmlFunction
+hi def link gmlParticleEffectFunction       gmlFunction
+hi def link gmlParticleEmitterFunction      gmlFunction
+hi def link gmlPhysicsFunction              gmlFunction
+hi def link gmlPhysicsFixtureFunction       gmlFunction
+hi def link gmlPhysicsForceFunction         gmlFunction
+hi def link gmlPhysicsJointFunction         gmlFunction
+hi def link gmlPhysicsParticleFunction      gmlFunction
+hi def link gmlPhysicsWorldFunction         gmlFunction
+hi def link gmlPushNotificationFunction     gmlFunction
+hi def link gmlRoomFunction                 gmlFunction
+hi def link gmlShaderFunction               gmlFunction
+hi def link gmlStringFunction               gmlFunction
+hi def link gmlSurfaceFunction              gmlFunction
+hi def link gmlApplicationSurfaceFunction   gmlFunction
+hi def link gmlTimelineFunction             gmlFunction
+hi def link gmlDisplayFunction              gmlFunction
+hi def link gmlWindowFunction               gmlFunction
+hi def link gmlViewFunction                 gmlFunction
+hi def link gmlCameraFunction               gmlFunction
+hi def link gmlBuiltinFunction              gmlFunction
+hi def link gmlBuiltinScriptVariable        gmlFunction
+hi def link gmlArrayFunction                gmlFunction
+hi def link gmlGpuFunction                  gmlFunction
+hi def link gmlBufferFunction               gmlFunction
 
-hi def link gmlFunction                   Function
-
-
-hi def link gmlKeyboardConstant           gmlConstant
-hi def link gmlKeyboardModifierConstant   gmlConstant
-hi def link gmlMouseConstant              gmlConstant
-hi def link gmlParticleEffectConstant     gmlConstant
-hi def link gmlPhysicsJointConstant       gmlConstant
-hi def link gmlShaderConstant             gmlConstant
-hi def link gmlEventTypeConstant          gmlConstant
-hi def link gmlEventNumberConstant        gmlConstant
-hi def link gmlColorConstant              gmlConstant
-hi def link gmlDrawAlignConstant          gmlConstant
-
-hi def link gmlConstant                   Constant
+hi def link gmlFunction                     Function
 
 
-hi def link gmlBuiltinMovementVariable    gmlBuiltinVariable
-hi def link gmlBuiltinInstanceVariable    gmlBuiltinVariable
-hi def link gmlBuiltinInstanceProperty    gmlBuiltinVariable
-hi def link gmlPathVariable               gmlBuiltinVariable
-hi def link gmlEventVariable              gmlBuiltinVariable
-hi def link gmlPhysicsVariable            gmlBuiltinVariable
+hi def link gmlKeyboardConstant             gmlConstant
+hi def link gmlKeyboardModifierConstant     gmlConstant
+hi def link gmlMouseConstant                gmlConstant
+hi def link gmlParticleEffectConstant       gmlConstant
+hi def link gmlPhysicsJointConstant         gmlConstant
+hi def link gmlShaderConstant               gmlConstant
+hi def link gmlEventTypeConstant            gmlConstant
+hi def link gmlEventNumberConstant          gmlConstant
+hi def link gmlColorConstant                gmlConstant
+hi def link gmlDrawAlignConstant            gmlConstant
 
-hi def link gmlBuiltinVariable            Identifier
+hi def link gmlConstant                     Constant
 
 
-hi def link gmlKeyword                    Keyword
+hi def link gmlBuiltinMovementVariable      gmlBuiltinVariable
+hi def link gmlBuiltinInstanceVariable      gmlBuiltinVariable
+hi def link gmlBuiltinInstanceProperty      gmlBuiltinVariable
+hi def link gmlPathVariable                 gmlBuiltinVariable
+hi def link gmlEventVariable                gmlBuiltinVariable
+hi def link gmlPhysicsVariable              gmlBuiltinVariable
 
-hi def link gmlTodo                       Todo
+hi def link gmlBuiltinVariable              Identifier
 
-hi def link gmlType                       Type
-hi def link gmlDSType                     Type
-hi def link gmlReal                       Float
-hi def link gmlBoolean                    Boolean
 
-hi def link gmlString                     String
-hi def link gmlCharacter                  Character
+hi def link gmlKeyword                      Keyword
 
-hi def link gmlUnaryOperator              Operator
-hi def link gmlArithmeticOperator         Operator
-hi def link gmlAssignmentOperator         Operator
-hi def link gmlComparisonOperator         Operator
-hi def link gmlBitwiseOperator            Operator
-hi def link gmlBooleanOperator            Operator
-hi def link gmlAccessorOperator           Operator
+hi def link gmlTodo                         Todo
 
-hi def link gmlDocComment                 Comment
-hi def link gmlLineComment                Comment
-hi def link gmlBlockComment               Comment
+hi def link gmlType                         Type
+hi def link gmlDSType                       Type
+hi def link gmlReal                         Float
+hi def link gmlBoolean                      Boolean
+
+hi def link gmlString                       String
+hi def link gmlCharacter                    Character
+
+hi def link gmlUnaryOperator                Operator
+hi def link gmlArithmeticOperator           Operator
+hi def link gmlAssignmentOperator           Operator
+hi def link gmlComparisonOperator           Operator
+hi def link gmlBitwiseOperator              Operator
+hi def link gmlBooleanOperator              Operator
+hi def link gmlAccessorOperator             Operator
+hi def link gmlTernaryOperator              Operator
+
+hi def link gmlDocComment                   Comment
+hi def link gmlLineComment                  Comment
+hi def link gmlBlockComment                 Comment
+
+hi def link gmlBracket                      NonText
+hi def link gmlCodeBlock                    NonText
+hi def link gmlParenPair                    NonText
+
+hi def link gmlGlobal                       SpecialKey
+hi def link gmlLocal                        LocalVar
+
+hi def link gmlExceptionHandling            Handler
 
 
 let b:current_syntax = "gml"
